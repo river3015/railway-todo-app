@@ -176,5 +176,5 @@ const Tasks = (props) => {
 Tasks.propTypes = {
   tasks: PropTypes.arrayOf(PropTypes.string).isRequired,
   selectListId: PropTypes.number.isRequired,
-  isDoneDisplay: PropTypes.bool.isRequired
+  isDoneDisplay: PropTypes.bool.isRequired,
 };

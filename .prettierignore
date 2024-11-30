@@ -5,3 +5,9 @@ public
 README.md
 package.json
 package-lock.json
+.env
+.env.sample
+.git
+.gitignore
+.prettierrc.js
+eslint.config.mjs
