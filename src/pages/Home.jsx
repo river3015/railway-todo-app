@@ -4,6 +4,7 @@ import { useCookies } from "react-cookie";
 import axios from "axios";
 import { Header } from "../components/Header";
 import { url } from "../const";
+import PropTypes from "prop-types";
 import "./home.css";
 
 export const Home = () => {
@@ -170,4 +171,10 @@ const Tasks = (props) => {
         ))}
     </ul>
   );
+};
+
+Tasks.propTypes = {
+  tasks: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectListId: PropTypes.number.isRequired,
+  isDoneDisplay: PropTypes.bool.isRequired
 };
