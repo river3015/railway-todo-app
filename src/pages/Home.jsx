@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { useCookies } from "react-cookie";
-import axios from "axios";
-import { Header } from "../components/Header";
-import { url } from "../const";
-import PropTypes from "prop-types";
-import "./home.css";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+import axios from 'axios';
+import { Header } from '../components/Header';
+import { url } from '../const';
+import PropTypes from 'prop-types';
+import './home.css';
 
 export const Home = () => {
-  const [isDoneDisplay, setIsDoneDisplay] = useState("todo"); // todo->未完了 done->完了
+  const [isDoneDisplay, setIsDoneDisplay] = useState('todo'); // todo->未完了 done->完了
   const [lists, setLists] = useState([]);
   const [selectListId, setSelectListId] = useState();
   const [tasks, setTasks] = useState([]);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const [cookies] = useCookies();
   const handleIsDoneDisplayChange = (e) => setIsDoneDisplay(e.target.value);
   useEffect(() => {
@@ -32,7 +32,7 @@ export const Home = () => {
 
   useEffect(() => {
     const listId = lists[0]?.id;
-    if (typeof listId !== "undefined") {
+    if (typeof listId !== 'undefined') {
       setSelectListId(listId);
       axios
         .get(`${url}/lists/${listId}/tasks`, {
@@ -77,9 +77,7 @@ export const Home = () => {
                 <Link to="/list/new">リスト新規作成</Link>
               </p>
               <p>
-                <Link to={`/lists/${selectListId}/edit`}>
-                  選択中のリストを編集
-                </Link>
+                <Link to={`/lists/${selectListId}/edit`}>選択中のリストを編集</Link>
               </p>
             </div>
           </div>
@@ -89,7 +87,7 @@ export const Home = () => {
               return (
                 <li
                   key={key}
-                  className={`list-tab-item ${isActive ? "active" : ""}`}
+                  className={`list-tab-item ${isActive ? 'active' : ''}`}
                   onClick={() => handleSelectList(list.id)}
                 >
                   {list.title}
@@ -103,19 +101,12 @@ export const Home = () => {
               <Link to="/task/new">タスク新規作成</Link>
             </div>
             <div className="display-select-wrapper">
-              <select
-                onChange={handleIsDoneDisplayChange}
-                className="display-select"
-              >
+              <select onChange={handleIsDoneDisplayChange} className="display-select">
                 <option value="todo">未完了</option>
                 <option value="done">完了</option>
               </select>
             </div>
-            <Tasks
-              tasks={tasks}
-              selectListId={selectListId}
-              isDoneDisplay={isDoneDisplay}
-            />
+            <Tasks tasks={tasks} selectListId={selectListId} isDoneDisplay={isDoneDisplay} />
           </div>
         </div>
       </main>
@@ -128,7 +119,7 @@ const Tasks = (props) => {
   const { tasks, selectListId, isDoneDisplay } = props;
   if (tasks === null) return <></>;
 
-  if (isDoneDisplay == "done") {
+  if (isDoneDisplay == 'done') {
     return (
       <ul>
         {tasks
@@ -137,13 +128,10 @@ const Tasks = (props) => {
           })
           .map((task, key) => (
             <li key={key} className="task-item">
-              <Link
-                to={`/lists/${selectListId}/tasks/${task.id}`}
-                className="task-item-link"
-              >
+              <Link to={`/lists/${selectListId}/tasks/${task.id}`} className="task-item-link">
                 {task.title}
                 <br />
-                {task.done ? "完了" : "未完了"}
+                {task.done ? '完了' : '未完了'}
               </Link>
             </li>
           ))}
@@ -159,13 +147,10 @@ const Tasks = (props) => {
         })
         .map((task, key) => (
           <li key={key} className="task-item">
-            <Link
-              to={`/lists/${selectListId}/tasks/${task.id}`}
-              className="task-item-link"
-            >
+            <Link to={`/lists/${selectListId}/tasks/${task.id}`} className="task-item-link">
               {task.title}
               <br />
-              {task.done ? "完了" : "未完了"}
+              {task.done ? '完了' : '未完了'}
             </Link>
           </li>
         ))}
