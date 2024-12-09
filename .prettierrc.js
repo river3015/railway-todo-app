@@ -10,4 +10,14 @@ module.exports = {
   jsxSingleQuote: false, // "" for react props, like in html
   bracketSameLine: false, // pretty JSX
   endOfLine: 'lf', // 'lf' for linux, 'crlf' for windows, we need to use 'lf' for git
+  overrides: [
+    {
+      files: '*.scss',
+      options: {
+        parser: 'scss', // Use SCSS parser for .scss files
+        singleQuote: false, // Use double quotes for SCSS strings
+        bracketSpacing: true, // Ensure proper spacing in brackets
+      },
+    },
+  ],
 };
