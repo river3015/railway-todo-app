@@ -117,6 +117,25 @@ export const Home = () => {
 // 表示するタスク
 const Tasks = (props) => {
   const { tasks, selectListId, isDoneDisplay } = props;
+
+  function calculateRemainingTime(isoString) {
+    const limitDate = new Date(isoString);
+    const nowDateUTC = new Date();
+    const nowDateJST = nowDateUTC.setHours(nowDateUTC.getHours() + 9);
+    const diffMs = limitDate - nowDateJST;
+
+    if (diffMs <= 0) {
+      return '期限切れ';
+    }
+
+    const totalMinutes = Math.floor(diffMs / (1000 * 60));
+    const days = Math.floor(totalMinutes / (60 * 24));
+    const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+    const minutes = totalMinutes % 60;
+
+    return `${days}日${hours}時間${minutes}分`;
+  }
+
   if (tasks === null) return <></>;
 
   if (isDoneDisplay == 'done') {
@@ -129,9 +148,13 @@ const Tasks = (props) => {
           .map((task, key) => (
             <li key={key} className="task-item">
               <Link to={`/lists/${selectListId}/tasks/${task.id}`} className="task-item-link">
-                {task.title}
+                タイトル：{task.title}
                 <br />
-                {task.done ? '完了' : '未完了'}
+                期限日時：{task.limit}
+                <br />
+                残り日時：{calculateRemainingTime(task.limit)}
+                <br />
+                ステータス：{task.done ? '完了' : '未完了'}
               </Link>
             </li>
           ))}
@@ -148,9 +171,13 @@ const Tasks = (props) => {
         .map((task, key) => (
           <li key={key} className="task-item">
             <Link to={`/lists/${selectListId}/tasks/${task.id}`} className="task-item-link">
-              {task.title}
+              タイトル：{task.title}
               <br />
-              {task.done ? '完了' : '未完了'}
+              期限日時：{task.limit}
+              <br />
+              残り日時：{calculateRemainingTime(task.limit)}
+              <br />
+              ステータス：{task.done ? '完了' : '未完了'}
             </Link>
           </li>
         ))}
@@ -159,7 +186,7 @@ const Tasks = (props) => {
 };
 
 Tasks.propTypes = {
-  tasks: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selectListId: PropTypes.number.isRequired,
-  isDoneDisplay: PropTypes.bool.isRequired,
+  // tasks: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selectListId: PropTypes.string,
+  isDoneDisplay: PropTypes.string.isRequired,
 };
