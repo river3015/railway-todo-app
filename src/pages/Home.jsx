@@ -21,6 +21,7 @@ export const Home = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [cookies] = useCookies();
   const handleIsDoneDisplayChange = (e) => setIsDoneDisplay(e.target.value);
+  const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => {
     axios
       .get(`${url}/lists`, {
@@ -70,6 +71,19 @@ export const Home = () => {
         setErrorMessage(`タスクの取得に失敗しました。${err}`);
       });
   };
+
+  const handleKeyDown = (e) => {
+    let newIndex = activeIndex;
+
+    if (e.key === 'ArrowRight') {
+      newIndex = (activeIndex + 1) % lists.length;
+    } else if (e.key === 'ArrowLeft') {
+      newIndex = (activeIndex - 1 + lists.length) % lists.length;
+    }
+
+    setActiveIndex(newIndex);
+  };
+
   return (
     <div>
       <Header />
@@ -87,14 +101,17 @@ export const Home = () => {
               </p>
             </div>
           </div>
-          <ul className="list-tab">
-            {lists.map((list, key) => {
-              const isActive = list.id === selectListId;
+          <ul className="list-tab" role="tablist" onKeyDown={handleKeyDown}>
+            {lists.map((list, index) => {
+              const isActive = index === activeIndex;
               return (
                 <li
-                  key={key}
+                  key={list.id}
                   className={`list-tab-item ${isActive ? 'active' : ''}`}
-                  onClick={() => handleSelectList(list.id)}
+                  role="tab"
+                  tabIndex={isActive ? 0 : -1}
+                  aria-selected={isActive}
+                  onClick={() => setActiveIndex(index)}
                 >
                   {list.title}
                 </li>
