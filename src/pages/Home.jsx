@@ -6,6 +6,12 @@ import { Header } from '../components/Header';
 import { url } from '../const';
 import PropTypes from 'prop-types';
 import './home.scss';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const Home = () => {
   const [isDoneDisplay, setIsDoneDisplay] = useState('todo'); // todo->未完了 done->完了
@@ -119,10 +125,9 @@ const Tasks = (props) => {
   const { tasks, selectListId, isDoneDisplay } = props;
 
   function calculateRemainingTime(isoString) {
-    const limitDate = new Date(isoString);
-    const nowDateUTC = new Date();
-    const nowDateJST = nowDateUTC.setHours(nowDateUTC.getHours() + 9);
-    const diffMs = limitDate - nowDateJST;
+    const limitDateUTC = dayjs(isoString);
+    const nowDateUTC = dayjs();
+    const diffMs = limitDateUTC - nowDateUTC;
 
     if (diffMs <= 0) {
       return '期限切れ';
@@ -150,7 +155,7 @@ const Tasks = (props) => {
               <Link to={`/lists/${selectListId}/tasks/${task.id}`} className="task-item-link">
                 タイトル：{task.title}
                 <br />
-                期限日時：{task.limit}
+                期限日時：{dayjs(task.limit).tz(dayjs.tz.guess()).format('YYYY-MM-DD HH:mm')}
                 <br />
                 残り日時：{calculateRemainingTime(task.limit)}
                 <br />
@@ -173,7 +178,7 @@ const Tasks = (props) => {
             <Link to={`/lists/${selectListId}/tasks/${task.id}`} className="task-item-link">
               タイトル：{task.title}
               <br />
-              期限日時：{task.limit}
+              期限日時：{dayjs(task.limit).tz(dayjs.tz.guess()).format('YYYY-MM-DD HH:mm')}
               <br />
               残り日時：{calculateRemainingTime(task.limit)}
               <br />
