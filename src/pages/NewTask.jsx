@@ -5,6 +5,12 @@ import { url } from '../const';
 import { Header } from '../components/Header';
 import './newTask.scss';
 import { useNavigate } from 'react-router-dom';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const NewTask = () => {
   const [selectListId, setSelectListId] = useState();
@@ -17,7 +23,11 @@ export const NewTask = () => {
   const navigate = useNavigate();
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
-  const handleLimitChange = (e) => setLimit(e.target.value);
+  const handleLimitChange = (e) => {
+    const localDate = dayjs(e.target.value);
+    const utcDate = localDate.utc();
+    setLimit(utcDate);
+  };
   const handleSelectList = (id) => setSelectListId(id);
   const onCreateTask = () => {
     function convertUTCToJST(utcDateStr) {
@@ -31,7 +41,7 @@ export const NewTask = () => {
       title: title,
       detail: detail,
       done: false,
-      limit: convertUTCToJST(limit).toISOString(),
+      limit: limit.toISOString(),
     };
 
     axios

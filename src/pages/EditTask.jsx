@@ -5,6 +5,12 @@ import { useCookies } from 'react-cookie';
 import { url } from '../const';
 import { useNavigate, useParams } from 'react-router-dom';
 import './editTask.scss';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export const EditTask = () => {
   const navigate = useNavigate();
@@ -17,21 +23,18 @@ export const EditTask = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleDetailChange = (e) => setDetail(e.target.value);
-  const handleLimitChange = (e) => setLimit(e.target.value);
+  const handleLimitChange = (e) => {
+    const localDate = dayjs(e.target.value);
+    const utcDate = localDate.utc();
+    setLimit(utcDate);
+  };
   const handleIsDoneChange = (e) => setIsDone(e.target.value === 'done');
   const onUpdateTask = () => {
-    function convertUTCToJST(utcDateStr) {
-      const date = new Date(utcDateStr);
-      const JSTOffset = 9 * 60 * 60 * 1000; //ミリ秒単位
-      const jstDate = new Date(date.getTime() + JSTOffset);
-      return jstDate;
-    }
-
     const data = {
       title: title,
       detail: detail,
       done: isDone,
-      limit: convertUTCToJST(limit).toISOString(),
+      limit: limit.toISOString(),
     };
 
     axios
@@ -76,7 +79,7 @@ export const EditTask = () => {
         setTitle(task.title);
         setDetail(task.detail);
         setIsDone(task.done);
-        setLimit(task.limit);
+        setLimit(dayjs(task.limit));
       })
       .catch((err) => {
         setErrorMessage(`タスク情報の取得に失敗しました。${err}`);
@@ -100,7 +103,12 @@ export const EditTask = () => {
           <br />
           <label>期限</label>
           <br />
-          <input type="datetime-local" onChange={handleLimitChange} className="edit-task-limit" value={limit} />
+          <input
+            type="datetime-local"
+            onChange={handleLimitChange}
+            className="edit-task-limit"
+            value={dayjs.utc(limit).tz(dayjs.tz.guess()).format('YYYY-MM-DDTHH:mm')}
+          />
           <br />
           <div>
             <input
